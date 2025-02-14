@@ -1,6 +1,5 @@
 <?php
 session_start();
-// Maak verbinding met de database
 include 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -18,7 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
-        header("Location: fileUploader.php");
+
+        // Stuur verificatiemail
+        header("Location: sendVerificationEmail.php");
         exit();
     } else {
         $error = "Ongeldige gebruikersnaam of wachtwoord.";
