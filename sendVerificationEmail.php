@@ -1,8 +1,9 @@
 <?php
+// Laad de PHPMailer en de composer packages
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once 'vendor/autoload.php'; // Laad Composer packages
+require_once 'vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
@@ -15,14 +16,15 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Genereer een 6-cijferige verificatiecode
+// Maakt een 6-cijferige verificatiecode van random cijfers
 $verificationCode = rand(100000, 999999);
 $_SESSION['verification_code'] = password_hash($verificationCode, PASSWORD_DEFAULT);
-$_SESSION['verification_expires'] = time() + 300; // Code is 5 minuten geldig
+// Tijd waarna de code verloopt
+$_SESSION['verification_expires'] = time() + 300;
 
-// Haal e-mailadres van de gebruiker op (vervang dit met je eigen manier om e-mail te krijgen)
-include 'config.php'; // Verbind met de database
-
+// Verbind met de database
+include 'config.php';
+// Haal de e-mail van de gebruiker op
 $userId = $_SESSION['user_id'];
 
 $stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
@@ -49,7 +51,7 @@ try {
     $mail->Port = 587;
 
     // Verzendinstellingen
-    $mail->setFrom($_ENV['GMAIL_USER'], 'Jouw Naam');
+    $mail->setFrom($_ENV['GMAIL_USER'], 'Melvin Schoonen');
     $mail->addAddress($userEmail);
 
     // E-mail inhoud

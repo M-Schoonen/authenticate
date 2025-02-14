@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (time() > $_SESSION['verification_expires']) {
         $error = "De verificatiecode is verlopen.";
     } elseif (password_verify($enteredCode, $_SESSION['verification_code'])) {
-        // Code is correct, doorgaan naar de beveiligde pagina
+        // Als de code goed is log je in
         unset($_SESSION['verification_code']);
         unset($_SESSION['verification_expires']);
         header("Location: fileUploader.php");
