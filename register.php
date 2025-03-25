@@ -8,6 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $firstName = trim($_POST['firstName']);
     $lastName = trim($_POST['lastName']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    
+    // Stel de standaard rol in (bijv. 'lid', rol_id = 1)
+    $defaultRoleId = 1; // 1 is voor 'lid', stel dit in als je rol_id wilt gebruiken
 
     // Controleer of gebruikersnaam of e-mail al bestaat
     $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
@@ -18,9 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($stmt->num_rows > 0) {
         $error = "Gebruikersnaam of e-mailadres is al in gebruik.";
     } else {
-        // Voeg gebruiker toe aan de database
-        $stmt = $conn->prepare("INSERT INTO users (username, email, firstName, lastName, password) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $username, $email, $firstName, $lastName, $password);
+        // Voeg gebruiker toe aan de database met rol_id
+        $stmt = $conn->prepare("INSERT INTO users (username, email, firstName, lastName, password, rol_id) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $username, $email, $firstName, $lastName, $password, $defaultRoleId);
 
         if ($stmt->execute()) {
             header("Location: login.php");
